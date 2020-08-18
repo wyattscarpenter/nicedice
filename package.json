@@ -1,0 +1,23 @@
+{
+  "name": "nicedice",
+  "version": "0.1.0",
+  "description": "rolls dnd-style dice",
+  "main": "nicedice.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wyattscarpenter/nicedice.git"
+  },
+  "keywords": [
+    "nice",
+    "dice"
+  ],
+  "author": "Wyatt S Carpenter",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/wyattscarpenter/nicedice/issues"
+  },
+  "homepage": "https://github.com/wyattscarpenter/nicedice#readme"
+}
