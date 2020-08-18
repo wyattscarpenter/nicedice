@@ -7,4 +7,5 @@ console.log(nicedice.roll("2d6"));
 console.log(nicedice.roll("2!6"));
 console.log(nicedice.roll("2d"));
 console.log(nicedice.roll("d6"));
-console.log(nicedice.roll("!6"), nicedice.roll("2!"));
+console.log(nicedice.roll("!6"));
+console.log(nicedice.roll("2!"));

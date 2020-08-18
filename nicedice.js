@@ -66,5 +66,5 @@ function roll(string){
   }
   */
   expression();
-  return {result: result, valid: valid}; 
+  return {input: string, result: result, valid: valid}; 
 }
