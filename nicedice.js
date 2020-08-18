@@ -79,6 +79,48 @@ function roll(string){
     }
   }
 
+  function multiplicative_statement(left){
+    op = pop(); //we know this is * / or %
+    var running_total = 0;
+    var right = valuable();
+    if(right!==0 && !right){
+      valid=false;
+    }
+    if(op=="*"){
+      running_total = left * right;
+    } else if (op=="/") {
+      running_total = left / right;
+    } else if (op=="%") {
+      running_total = left % right;
+    }
+
+    if(peek()&&['*','/','%'].includes(peek())){
+      return multiplicative_statement(running_total);
+    } else {
+      return running_total;
+    }
+  }
+
+  function additive_statement(left){
+    op = pop(); //we know this is + or -
+    var running_total = 0;
+    var right = valuable();
+    if(right!==0 && !right){
+      valid=false;
+    }
+    if(op=="+"){
+      running_total = left + right;
+    } else if (op=="-") {
+      running_total = left - right;
+    }
+
+    if(peek()&&['+','-'].includes(peek())){
+      return additive_statement(running_total);
+    } else {
+      return running_total;
+    }
+  }
+
   function number(){
     var digits = "";
     while(peek()&&peek().match(/\d/)){
