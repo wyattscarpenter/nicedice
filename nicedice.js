@@ -22,26 +22,53 @@ function roll(string){
   function peek(){
     return string[symbolindex];
   }
-  
-  function expression(){ //this will have to be expanded later
-    var lhs = number() || 1; //allow this to be empty so the user can say eg "d6"
-    var d   = die_symbol();
-    var rhs = number() || (valid=false); //lol //don't allow this to be empty
-    for(var i = 0; i < lhs; i++){
-      var a_roll = Math.floor(Math.random()*rhs)+1;
-      result += a_roll + " ";
-      total += a_roll;
+  //this is basically a recursive descent parser
+  function expression(){
+    var left;
+    if (peek()&&peek()=="(") {
+      left = s();
+    } else if (peek()&&peek().match(/\d/)) {
+      left = number();
+    } else if (peek()&&['!','d'].includes(peek())) {
+      left=0;
+    } else {
+      valid=false;
     }
-    result += ": " + total;
-  }
-  function die_symbol(){
-    var die_symbols = ['!','d'];
-    if(die_symbols.includes(peek())){
-      return pop();
+
+    if(peek()&&['!','d'].includes(peek())){
+      return dice_statement(left);
+    } else if (peek()&&['*','/','%'].includes(peek())){
+      return multiplicative_statement(left);
+    } else if (peek()&&['+','-'].includes(peek())){
+      return additive_statement(left);
     } else {
       valid = false;
     }
   }
+
+  function dice_statement(left){
+    pop(); //we know this is d or !
+    var running_total = 0;
+    var right = number();
+    if(right===""){
+      valid=false;
+    }
+    result += " [ "
+    for(var i = 0; i < left; i++){
+      var a_roll = Math.floor(Math.random()*right)+1;
+      result += a_roll + " ";
+      running_total += a_roll;
+    }
+    result += ": " + running_total;
+    result += " ] "
+
+    if(peek()&&['!','d'].includes(peek())){
+      return dice_statement(running_total);
+    } else {
+      return running_total;
+    }
+  }
+
   function number(){
     var digits = "";
     while(peek()&&peek().match(/\d/)){
@@ -49,14 +76,6 @@ function roll(string){
     }
     return digits; //this will implicitly convert from string to number later
   }
-  /* //might need to keep this test code to avoid annoying everyone with live debugging
-  var match = string.match(/([0-9]+)[d!]([0-9]+)/);
-  if(match){
-    
-  } else {
-    valid = false;
-  }
-  */
   /*
   if(!subresult.valid){
     valid=false;
@@ -65,6 +84,6 @@ function roll(string){
     result += subresult.result;
   }
   */
-  expression();
+  total=expression();
   return {input: string, result: result, valid: valid};
 }

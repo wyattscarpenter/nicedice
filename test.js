@@ -9,3 +9,6 @@ console.log(nicedice.roll("2d"));
 console.log(nicedice.roll("d6"));
 console.log(nicedice.roll("!6"));
 console.log(nicedice.roll("2!"));
+console.log(nicedice.roll("!"));
+console.log(nicedice.roll("d"));
+console.log(nicedice.roll("2d3d6"));
