@@ -35,4 +35,15 @@ console.log(nicedice.roll("2dd4")); //these are weird.
 console.log(nicedice.roll("2ddd4"));
 console.log(nicedice.roll("2d(d(d4))"));
 console.log(nicedice.roll("2d2d2d2d2d2d2"));
-
+console.log(nicedice.roll("1+3"));
+console.log(nicedice.roll("2*3"));
+console.log(nicedice.roll("3%2"));
+console.log(nicedice.roll("2/3"));
+console.log(nicedice.roll("12+d3"));
+console.log(nicedice.roll("12+3d3"));
+console.log(nicedice.roll("d1+3"));
+console.log(nicedice.roll("3d1+3"));
+console.log(nicedice.roll("12*d3"));
+console.log(nicedice.roll("12*3d3"));
+console.log(nicedice.roll("d1*3"));
+console.log(nicedice.roll("3d1*3"));

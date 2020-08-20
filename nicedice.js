@@ -97,6 +97,7 @@ function roll(string){
     if(peek()&&['*','/','%'].includes(peek())){
       return multiplicative_statement(running_total);
     } else {
+      result += ": " + running_total;
       return running_total;
     }
   }
@@ -108,15 +109,24 @@ function roll(string){
     if(right!==0 && !right){
       valid=false;
     }
+
+    if(peek()&&['*','/','%'].includes(peek())){ //we know it's like 1 + 2 *... so we have to recurse into multiplicaiton first
+      right = multiplicative_statement(right);
+    } else if(peek()&&['d','!'].includes(peek())) { //we know it's like 1 + 2 *... so we have to recurse into dice first
+      right = dice_statement(right);
+    }
+
     if(op=="+"){
-      running_total = left + right;
+      running_total = +left + +right;
+      //result += "+ "+right //we don't know if the dice are printing on left or right...
     } else if (op=="-") {
-      running_total = left - right;
+      running_total = +left - +right;
     }
 
     if(peek()&&['+','-'].includes(peek())){
       return additive_statement(running_total);
     } else {
+      result += ": " + running_total;
       return running_total;
     }
   }
