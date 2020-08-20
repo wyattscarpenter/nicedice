@@ -86,6 +86,11 @@ function roll(string){
     if(right!==0 && !right){
       valid=false;
     }
+    
+    if(peek()&&['d','!'].includes(peek())) { //we know it's like 1 * 2 d... so we have to recurse into dice first
+      right = dice_statement(right);
+    }
+    
     if(op=="*"){
       running_total = left * right;
     } else if (op=="/") {
@@ -112,7 +117,7 @@ function roll(string){
 
     if(peek()&&['*','/','%'].includes(peek())){ //we know it's like 1 + 2 *... so we have to recurse into multiplicaiton first
       right = multiplicative_statement(right);
-    } else if(peek()&&['d','!'].includes(peek())) { //we know it's like 1 + 2 *... so we have to recurse into dice first
+    } else if(peek()&&['d','!'].includes(peek())) { //we know it's like 1 + 2 d... so we have to recurse into dice first
       right = dice_statement(right);
     }
 
