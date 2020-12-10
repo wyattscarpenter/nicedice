@@ -1,3 +1,6 @@
+//I release this code into the public domain under CC0
+//Note: this code uses eval, which may be a security risk
+
 module.exports = {roll};
 
 function roll(string){
