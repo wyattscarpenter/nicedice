@@ -13,26 +13,26 @@ function roll(string){
   }
 
   //this is basically a recursive descent parser
-  //each function is greedy unless it passes to subexpressions
-  //(the subexpressions are greedy, then)
+  //each function is greedy
   //and each grammar function peeks to pass to the correct next function
-  //(pick_valuable doesn't follow that rule, it's called when we need a value and then must peek to dispatch)
+  /*E -> A
+    A -> M + A | M
+    M -> D * M | D
+    D -> N | d D | D d D
+    N -> /\d+/ | S
+    S -> ( E )
+  */
+
   function expression(){
     var left=valuable();
 
     //if it's just a number, subexpression, or dice throw, we are done.
     //(though, since the value might be 0 we can't check that, we have to check if we're out of room)
-    if(!peek()||peek()==')'){return left;}
-
-    if(peek()&&['!','d'].includes(peek())){
-      return dice_statement(left);
-    } else if (peek()&&['*','/','%'].includes(peek())){
-      return multiplicative_statement(left);
-    } else if (peek()&&['+','-'].includes(peek())){
-      return additive_statement(left);
-    } else {
-      valid = false;
+    if(!peek()||peek()==')'){
+      return left;
     }
+
+    return additive_statement(left);
   }
   function subexpression(){
     pop(); //we know this is '('
@@ -86,11 +86,11 @@ function roll(string){
     if(right!==0 && !right){
       valid=false;
     }
-    
+
     if(peek()&&['d','!'].includes(peek())) { //we know it's like 1 * 2 d... so we have to recurse into dice first
       right = dice_statement(right);
     }
-    
+
     if(op=="*"){
       running_total = left * right;
     } else if (op=="/") {
@@ -108,17 +108,18 @@ function roll(string){
   }
 
   function additive_statement(left){
-    op = pop(); //we know this is + or -
+    op = pop(); //we don't know what this is
     var running_total = 0;
+
+    if(['*','/','%'].includes(op)){ //we know it's like 1 + 2 *... so we have to recurse into multiplicaiton first
+      left = multiplicative_statement(left);
+    } else if(['d','!'].includes(op)) { //we know it's like 1 + 2 d... so we have to recurse into dice first
+      left = dice_statement(left);
+    }
+
     var right = valuable();
     if(right!==0 && !right){
       valid=false;
-    }
-
-    if(peek()&&['*','/','%'].includes(peek())){ //we know it's like 1 + 2 *... so we have to recurse into multiplicaiton first
-      right = multiplicative_statement(right);
-    } else if(peek()&&['d','!'].includes(peek())) { //we know it's like 1 + 2 d... so we have to recurse into dice first
-      right = dice_statement(right);
     }
 
     if(op=="+"){
@@ -126,6 +127,11 @@ function roll(string){
       //result += "+ "+right //we don't know if the dice are printing on left or right...
     } else if (op=="-") {
       running_total = +left - +right;
+    }
+    if(peek()&&['*','/','%'].includes(peek())){ //we know it's like 1 + 2 *... so we have to recurse into multiplicaiton first
+      right = multiplicative_statement(right);
+    } else if(peek()&&['d','!'].includes(peek())) { //we know it's like 1 + 2 d... so we have to recurse into dice first
+      right = dice_statement(right);
     }
 
     if(peek()&&['+','-'].includes(peek())){
