@@ -1,5 +1,5 @@
 //I release this code into the public domain under CC0
-//Note: this code uses eval, which may be a security risk
+//Note: this code uses Function, which is spooky
 
 module.exports = {roll};
 
@@ -43,7 +43,7 @@ function roll(string){
   var value;
   var valid;
   try{
-    value = eval(string);
+    value = Function("d", "advantage", "disadvantage", "return "+string)(d, advantage, disadvantage);
     valid = true;
   }catch{
     valid = false;
