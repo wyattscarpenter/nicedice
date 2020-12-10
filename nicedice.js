@@ -1,160 +1,125 @@
 module.exports = {roll};
 function roll(string){
   var valid = true;
-  var result = "";
+  var expansion = "";
   var total = 0;
 
   var symbolindex = 0;
+  //if pop or peek return undefined, which is falsy, we have exceeded the length of the string
   function pop(){
     return string[symbolindex++];
   }
   function peek(){
     return string[symbolindex];
   }
+  
+  var dice_layer = 0;
+  function expand_by(s){
+    if(!dice_layer){
+      expansion += s;
+    }
+  }
 
-  //this is basically a recursive descent parser
-  //each function is greedy
-  //and each grammar function peeks to pass to the correct next function
-  /*E -> M + E | M       //expression (additive)
-    M -> D * M | D       //multiplicative expression
-    D -> d D | D d D | N //dice expression
-    N -> /\d+/ | ( E )   //numerical value
+  //whitespace is ignored
+  //all other non-parsable characters will expansion in valid = false, thus the parse will be ignored
+  //TODO: advantage, disadvantage
+  /*E -> M | M + E       //expression (additive) //+ stands for + or -
+    M -> D | D * M       //multiplicative expression //* stands for * or / or %
+    D -> N | d D | D d D //dice expression //d stands for ! (they are identical in value) //right associative
+    N -> /\d+/ | ( E )   //numerical value //perhaps [ and { should be allowed?
   */
+
+//TODO: these are accidentally all right assoc :(
 
   function expression(){
-    var left=valuable();
-
-    //if it's just a number, subexpression, or dice throw, we are done.
-    //(though, since the value might be 0 we can't check that, we have to check if we're out of room)
-    if(!peek()||peek()==')'){
+    var left = multiplicative();
+    var op = peek();
+    if(!op){
       return left;
+    }else if(op == '+'){
+      expand_by(pop());
+      return left + expression();
+    }else if(op == '-'){
+      expand_by(pop());
+      return left - expression();
     }
-
-    return additive_statement(left);
+    return left;
   }
-  function subexpression(){
-    pop(); //we know this is '('
-    var value = expression();
-    if(peek()&&peek()==")"){
-      pop();
-    } else {
-      valid = false;
+  
+  function multiplicative(){
+    var left=dice();
+    var op = peek();
+    if(!op){
+      return left;
+    }else if(op == '*'){
+      expand_by(op);
+      return left*multiplicative();
+    }else if(op == '/'){
+      expand_by(op);
+      return left/multiplicative();
+    }else if(op == '%'){
+      expand_by(op);
+      return left%multiplicative();
     }
-    return value;
+    return left;
   }
-  function valuable(){
-    if (peek()&&peek()=="(") {
-      return subexpression();
-    } else if (peek()&&peek().match(/\d/)) {
-      return number();
+  
+  function dice(){ //test code
+    var left;
+    //leading number vs leading d
+    if (peek()&&(peek().match(/\d/)||peek()=="(")){
+      left = numerical();
     } else if (peek()&&['!','d'].includes(peek())) {
-      return dice_statement(1);
+      left = 1;
     } else {
       valid=false;
     }
+    
+    //actual dice rolling
+    //if there was a numberical to pop we've popped it at this point
+    if (peek()&&['!','d'].includes(peek())) {
+      pop(); //we know this is the dice operator, but we don't need the character anymore.
+      dice_layer++;
+      right = dice(); //recurse to find the right-hand side of the operator, since we need it now.
+      dice_layer--;
+      var running_total = 0;
+      expand_by("[");
+      for(var i = 0; i < left; i++){
+        var a_roll = Math.floor(Math.random()*right)+1;
+        expand_by(a_roll + " ");
+        running_total += a_roll;
+      }
+      expand_by(": "+running_total+"]");
+    }
+    
+    //plain numericals can fall through to this!
+    return left;
   }
-
-  function dice_statement(left){
-    pop(); //we know this is d or !
-    var running_total = 0;
-    var right = valuable();
-    if(!right){ //that ain't right. wait...
-      valid=false;
-    }
-    result += "["
-    for(var i = 0; i < left; i++){
-      var a_roll = Math.floor(Math.random()*right)+1;
-      result += a_roll + " ";
-      running_total += a_roll;
-    }
-    result += ": " + running_total;
-    result += "]"
-
-    if(peek()&&['!','d'].includes(peek())){
-      return dice_statement(running_total);
+  
+  function numerical(){
+    if (peek()&&peek()=="(") {
+      expand_by(pop());
+      left = expression();
+      end = pop(); //TODO: unclear if we should check this and set invalid or just let unclosed parens ride.
+      if(end&&end!=")"){
+        valid = false;
+      } else {
+        expand_by(")");
+      }
+    } else if (peek()&&peek().match(/\d/)) {
+      var digits = "";
+      while(peek()&&peek().match(/\d/)){
+        digits += pop();
+      }
+      expand_by(digits);
+      left = +digits;
     } else {
-      return running_total;
+      valid = false; //no exception for empties because all empties are invalid this deep.
     }
+    return left;
   }
 
-  function multiplicative_statement(left){
-    op = pop(); //we know this is * / or %
-    var running_total = 0;
-    var right = valuable();
-    if(right!==0 && !right){
-      valid=false;
-    }
-
-    if(peek()&&['d','!'].includes(peek())) { //we know it's like 1 * 2 d... so we have to recurse into dice first
-      right = dice_statement(right);
-    }
-
-    if(op=="*"){
-      running_total = left * right;
-    } else if (op=="/") {
-      running_total = left / right;
-    } else if (op=="%") {
-      running_total = left % right;
-    }
-
-    if(peek()&&['*','/','%'].includes(peek())){
-      return multiplicative_statement(running_total);
-    } else {
-      result += ": " + running_total;
-      return running_total;
-    }
-  }
-
-  function additive_statement(left){
-    op = pop(); //we don't know what this is
-    var running_total = 0;
-
-    if(['*','/','%'].includes(op)){ //we know it's like 1 + 2 *... so we have to recurse into multiplicaiton first
-      left = multiplicative_statement(left);
-    } else if(['d','!'].includes(op)) { //we know it's like 1 + 2 d... so we have to recurse into dice first
-      left = dice_statement(left);
-    }
-
-    var right = valuable();
-    if(right!==0 && !right){
-      valid=false;
-    }
-
-    if(op=="+"){
-      running_total = +left + +right;
-      //result += "+ "+right //we don't know if the dice are printing on left or right...
-    } else if (op=="-") {
-      running_total = +left - +right;
-    }
-    if(peek()&&['*','/','%'].includes(peek())){ //we know it's like 1 + 2 *... so we have to recurse into multiplicaiton first
-      right = multiplicative_statement(right);
-    } else if(peek()&&['d','!'].includes(peek())) { //we know it's like 1 + 2 d... so we have to recurse into dice first
-      right = dice_statement(right);
-    }
-
-    if(peek()&&['+','-'].includes(peek())){
-      return additive_statement(running_total);
-    } else {
-      result += ": " + running_total;
-      return running_total;
-    }
-  }
-
-  function number(){
-    var digits = "";
-    while(peek()&&peek().match(/\d/)){
-      digits += pop();
-    }
-    return digits; //this will implicitly convert from string to number later
-  }
-  /*
-  if(!subresult.valid){
-    valid=false;
-    result += "[parse error]";
-  } else {
-    result += subresult.result;
-  }
-  */
+  string=string.replace(/\s+/g, '');
   total=expression();
-  return {valid: valid, input: string, result: result};
+  return {valid: valid, total: total, input: string, expansion: expansion};
 }
