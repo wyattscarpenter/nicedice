@@ -1,5 +1,5 @@
 //I release this code into the public domain under CC0
-//Note: this code uses Function, which is spooky
+//Note: this code uses Function, which is spooky. An attempt is made to sanitize the input.
 
 module.exports = {roll};
 
@@ -29,7 +29,13 @@ function roll(string){
   }
   
   if(/^\d*$/.test(string)){
-    return {valid: false, value: true, input: input, roll_record: "input too trivial, just a number."};
+    return {valid: false, value: +string, input: input, roll_record: "Input too trivial, just a number."};
+  }
+  //This is our sanitization attempt. Hopefully the remaining characters are not enough for a jsfuck-style attack,
+  // but it's hard to say. JavaScript, amirite? Anyhow, I think this should be good, but I'm not omniscient.
+  //Also, be wary of the attacker getting functions named of the form (d|dis|adv|antage)* in your global scope.
+  if(!/^([\d\s+*%!d\-\/\(\)]|dis|adv|antage)*$/.test(string)){
+    return {valid: false, value: undefined, input: input, roll_record: "Includes non-dice-roll elements."};
   }
   
   string=string.replace(/dis(?:adv)?(?:antage)?\s*(\d+)[d\!](\d+)/g, 'disadvantage($1, $2)');
