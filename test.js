@@ -12,7 +12,6 @@ console.log(nicedice.roll("!"));
 console.log(nicedice.roll("()"));
 console.log(nicedice.roll("("));
 console.log(nicedice.roll(")"));
-console.log(nicedice.roll("d"));
 console.log(nicedice.roll("dd"));
 console.log(nicedice.roll("d0d"));
 console.log(nicedice.roll("d0d0d"));
@@ -26,7 +25,7 @@ console.log("\n Higher order rolls I decided not to implement:");
 console.log(nicedice.roll("2d3d6"));
 console.log(nicedice.roll("(2d3)d6"));
 console.log(nicedice.roll("2d(3d6)"));
-console.log(nicedice.roll("d(3d6)"));
+console.log(nicedice.roll("d(3d6)")); //This is a weird example b/c it almost works
 console.log(nicedice.roll("3d(d6)"));
 console.log(nicedice.roll("2dd4")); //these are weird.
 console.log(nicedice.roll("2ddd4"));
@@ -79,3 +78,8 @@ console.log(nicedice.roll("dis d6"));
 console.log(nicedice.roll("disd6"));
 
 console.log(nicedice.roll("advantage 2d6 + disadvantage 2d6 * advantage 2d6"));
+
+console.log("\n Self-documenting code advantage/disadvantage:");
+console.log(nicedice.roll("d"));
+console.log(nicedice.roll("advantage"));
+console.log(nicedice.roll("disadvantage"));
