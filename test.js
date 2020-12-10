@@ -5,6 +5,7 @@ console.log("test");
 
 console.log("\n Examples of invalid input:");
 console.log(nicedice.roll("Nice long word sentence."));
+console.log(nicedice.roll("123"));
 console.log(nicedice.roll("2d"));
 console.log(nicedice.roll("2!"));
 console.log(nicedice.roll("!"));
@@ -33,7 +34,6 @@ console.log(nicedice.roll("2d(d(d4))"));
 console.log(nicedice.roll("2d2d2d2d2d2d2"));
 
 console.log("\n Examples of valid input:");
-console.log(nicedice.roll("123"));
 console.log(nicedice.roll("(2d6)"));
 console.log(nicedice.roll("2d6"));
 console.log(nicedice.roll("2!6"));

@@ -25,6 +25,10 @@ function roll(string){
     return running_total;
   }
   
+  if(/^\d*$/.test(string)){
+    return {valid: false, value: true, input: input, roll_record: "input too trivial, just a number."};
+  }
+  
   string=string.replace(/dis(?:adv)?(?:antage)?\s*(\d+)[d\!](\d+)/g, 'disadvantage($1, $2)');
   string=string.replace(/dis(?:adv)?(?:antage)?\s*[d\!](\d+)/g, 'disadvantage(1, $1)');
   string=string.replace(/adv(?:antage)?\s*(\d+)[d\!](\d+)/g, 'advantage($1, $2)');
@@ -41,5 +45,5 @@ function roll(string){
   }catch{
     valid = false;
   }
-  return {value: value, valid: valid, input: input, roll_record: roll_record};
+  return {valid: valid, value: value, input: input, roll_record: roll_record};
 }
