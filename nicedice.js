@@ -15,12 +15,10 @@ function roll(string){
   //this is basically a recursive descent parser
   //each function is greedy
   //and each grammar function peeks to pass to the correct next function
-  /*E -> A
-    A -> M + A | M
-    M -> D * M | D
-    D -> N | d D | D d D
-    N -> /\d+/ | S
-    S -> ( E )
+  /*E -> M + E | M       //expression (additive)
+    M -> D * M | D       //multiplicative expression
+    D -> d D | D d D | N //dice expression
+    N -> /\d+/ | ( E )   //numerical value
   */
 
   function expression(){
