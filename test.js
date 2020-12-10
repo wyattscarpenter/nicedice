@@ -54,3 +54,28 @@ console.log(nicedice.roll("12*3d3"));
 console.log(nicedice.roll("d1*3"));
 console.log(nicedice.roll("3d1*3"));
 console.log(nicedice.roll("4d4*3d3"));
+
+console.log("\n Examples of advantage/disadvantage:");
+console.log(nicedice.roll("advantage 2d6"));
+console.log(nicedice.roll("advantage2d6"));
+console.log(nicedice.roll("adv 2d6"));
+console.log(nicedice.roll("adv2d6"));
+console.log(nicedice.roll("disadvantage 2d6"));
+console.log(nicedice.roll("disadvantage2d6"));
+console.log(nicedice.roll("disadv 2d6"));
+console.log(nicedice.roll("disadv2d6"));
+console.log(nicedice.roll("dis 2d6"));
+console.log(nicedice.roll("dis2d6"));
+
+console.log(nicedice.roll("advantage d6"));
+console.log(nicedice.roll("advantaged6"));
+console.log(nicedice.roll("advd6"));
+console.log(nicedice.roll("adv d6"));
+console.log(nicedice.roll("disadvantage d6"));
+console.log(nicedice.roll("disadvantaged6"));
+console.log(nicedice.roll("disadv d6"));
+console.log(nicedice.roll("disadvd6"));
+console.log(nicedice.roll("dis d6"));
+console.log(nicedice.roll("disd6"));
+
+console.log(nicedice.roll("advantage 2d6 + disadvantage 2d6 * advantage 2d6"));
