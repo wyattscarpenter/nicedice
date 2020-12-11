@@ -28,6 +28,10 @@ function roll(string){
     return running_total;
   }
   
+  if(!string){
+    return {valid: false, value: string, input: input, roll_record: "Input empty or function improperly called."};
+  }
+  
   if(/^[\d\s]*$/.test(string)){
     return {valid: false, value: +string, input: input, roll_record: "Input too trivial to consider."};
   }
