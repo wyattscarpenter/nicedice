@@ -1,5 +1,5 @@
 //I release this code into the public domain under CC0
-//Note: this code uses Function, which is spooky. An attempt is made to sanitize the input.
+//Note: this code uses Function, which is spooky. However, the input to that call is sanitized.
 
 module.exports = {roll};
 
@@ -29,24 +29,22 @@ function roll(string){
   }
   
   if(!string){
-    return {valid: false, value: string, input: input, roll_record: "Input empty or function improperly called."};
+    return {valid: false, value: string, input: input, roll_record: "Input empty or roll function improperly called."};
   }
   
   if(/^[\d\s]*$/.test(string)){
     return {valid: false, value: +string, input: input, roll_record: "Input too trivial to consider."};
   }
-  /* //Actually, I like having non-digit strings because then you can call eg "advantage" on its own to see its source-- self-documenting!
+
   if(!/\d/.test(string)){
     return {valid: false, value: undefined, input: input, roll_record: "Input includes no digits."};
   }
-  */
-  //This is our sanitization attempt. Hopefully the remaining characters are not enough for a jsfuck-style attack,
-  // but it's hard to say. JavaScript, amirite? Anyhow, I think this should be good, but I'm not omniscient.
-  //Also, be wary of the attacker getting functions named of the form (d|dis|adv|antage)* in your global scope.
-  if(!/^([\d\s+*%!d\-\/\(\)]|dis|adv|antage)*$/.test(string)){
-    return {valid: false, value: undefined, input: input, roll_record: "Input includes non-dice-roll elements."};
-  }
   
+  //these (strongly normalizing!) rewrite rules rewrite nicedice shorthand
+  // example: 2d6+d6+3!4+adv d5
+  //to nicedice longhand
+  //example: d(2,6)+d(1,6)+d(3,4)+advantage(1,5)
+  //note that you are also allowed to pass longhand to roll, and longhand terms are unaffected by these regexs
   string=string.replace(/dis(?:adv)?(?:antage)?\s*(\d+)[d\!](\d+)/g, 'disadvantage($1, $2)');
   string=string.replace(/dis(?:adv)?(?:antage)?\s*[d\!](\d+)/g, 'disadvantage(1, $1)');
   string=string.replace(/adv(?:antage)?\s*(\d+)[d\!](\d+)/g, 'advantage($1, $2)');
@@ -55,11 +53,23 @@ function roll(string){
   string=string.replace(/[d\!](\d+)/g, 'd(1, $1)');
   roll_record += string;
 
+  //This is our sanitization step. Hopefully the remaining characters are not enough for a jsfuck-style attack,
+  // but it's hard to say. JavaScript, amirite? Anyhow, I think this should be good, but I'm not omniscient.
+  //since we know exactly what functions we're going to use in nicedice longhand expressions, we can conservatively disallow everything else.
+  if(!/^([\d\s+*%\-\/\(\)\,]|disadvantage\(|advantage\(|d\()*$/.test(string)){
+    return {valid: false, value: undefined, input: input, roll_record: "Input includes illegal characters or compositions: "+roll_record};
+  }
+
   var value;
   var valid;
   try{
-    value = Function("d", "advantage", "disadvantage", "return "+string)(d, advantage, disadvantage);
+    //use strict has a marginal security benefit here about eg not being able to make new variables in global scope from here, but really I just hate octal constants.
+    value = Function("d", "advantage", "disadvantage", "'use strict';return "+string)(d, advantage, disadvantage);
     valid = true;
+    if(!value && value!=="0" &&  value!==0){ //sometimes you get a syntactically valid form that evals to NaN or undefined
+      roll_record += "(syntactically valid form didn't evaluate to a valid numeric result)"
+      valid = false;
+    }
   }catch{
     valid = false;
   }

@@ -29,6 +29,7 @@ console.log(nicedice.roll("(2d)d4"));
 console.log(nicedice.roll("(2dd)d4"));
 console.log(nicedice.roll("(2+1)d4"));
 console.log(nicedice.roll("No 2d12 embedding"));
+console.log(nicedice.roll("d6 d6"));
 
 console.log("\n Higher order rolls I decided not to implement:");
 console.log(nicedice.roll("2d3d6"));
@@ -87,8 +88,3 @@ console.log(nicedice.roll("dis d6"));
 console.log(nicedice.roll("disd6"));
 
 console.log(nicedice.roll("advantage 2d6 + disadvantage 2d6 * advantage 2d6"));
-
-console.log("\n Self-documenting code advantage/disadvantage:");
-console.log(nicedice.roll("d"));
-console.log(nicedice.roll("advantage"));
-console.log(nicedice.roll("disadvantage"));
