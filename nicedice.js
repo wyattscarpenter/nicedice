@@ -32,8 +32,12 @@ function roll(string){
     return {valid: false, value: string, input: input, roll_record: "Input empty or roll function improperly called."};
   }
   
-  if(/^[\d\s]*$/.test(string)){
-    return {valid: false, value: +string, input: input, roll_record: "Input too trivial to consider."};
+  if (!(typeof string === 'string' || string instanceof String)){
+    return {valid: false, value: string, input: input, roll_record: "Input must be a string, yet the input provided is not a string."};
+  }
+  
+  if( ! (string.includes("d") || string.includes("!"))){
+    return {valid: false, value: +string, input: input, roll_record: "Input lacks a dice operator or dice function so it has been ignored."};
   }
 
   if(!/\d/.test(string)){
@@ -55,7 +59,9 @@ function roll(string){
 
   //This is our sanitization step. Hopefully the remaining characters are not enough for a jsfuck-style attack,
   // but it's hard to say. JavaScript, amirite? Anyhow, I think this should be good, but I'm not omniscient.
-  //since we know exactly what functions we're going to use in nicedice longhand expressions, we can conservatively disallow everything else.
+  //Since we know exactly what functions we're going to use in nicedice longhand expressions, we can conservatively disallow everything else.
+  //Note that we have to allow the comma for function arguments, so we have to allow the comma operator, which is a strange operator.
+  //How doth the comma op'rator / return his shining tail / Confusing so his creator / On every golden scale!
   if(!/^([\d\s+*%\-\/\(\)\,]|disadvantage\(|advantage\(|d\()*$/.test(string)){
     return {valid: false, value: undefined, input: input, roll_record: "Input includes illegal characters or compositions: "+roll_record};
   }
