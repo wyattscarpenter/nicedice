@@ -21,7 +21,7 @@ console.log("\n Higher order rolls I decided not to implement:");
 do_test_cases(["2d3d6", "(2d3)d6", "2d(3d6)", "d(3d6)",  /*This is a weird example b/c it almost works*/ "3d(d6)", "2dd4",  /*these are weird.*/"2ddd4", "2d(d(d4))", "2d2d2d2d2d2d2"]);
 
 console.log("\n Examples of valid input:");
-do_test_cases(["(2d6)", "2d6", "2!6", "10!10", "!6", "d6", "!0", "d1", "2d2%2", "3%2d2", "2/3d3", "12+d3", "12+3d3", "4d4+3d3", "d1+3", "3d1+3", "12*d3", "12*3d3", "d1*3", "3d1*3", "4d4*3d3",  ]);
+do_test_cases(["(2d6)", "2d6", "2d6", "10d10", "d6", "d99999999999999999999", "d9999999999999999999999999999999999999999", "d0", "d1", "2d2%2", "3%2d2", "2/3d3", "12+d3", "12+3d3", "4d4+3d3", "d1+3", "3d1+3", "12*d3", "12*3d3", "d1*3", "3d1*3", "4d4*3d3",  ]);
 
 console.log("\n maybe you want to do some math:");
 do_test_cases(["d0, 2+2", "2+2, d0", "2+2 * d0", "d0, 1/0", "d0 * 1/0", "d0 + 1/0", "d0 - 1/0", "d0, -1/0"]);

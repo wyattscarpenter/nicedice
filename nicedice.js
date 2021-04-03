@@ -36,7 +36,7 @@ function roll(string){
     return {valid: false, value: string, input: input, roll_record: "Input must be a string, yet the input provided is not a string."};
   }
   
-  if( ! (string.includes("d") || string.includes("!"))){
+  if(!string.includes("d")){
     return {valid: false, value: +string, input: input, roll_record: "Input lacks a dice operator or dice function so it has been ignored."};
   }
 
@@ -49,12 +49,12 @@ function roll(string){
   //to nicedice longhand
   //example: d(2,6)+d(1,6)+d(3,4)+advantage(1,5)
   //note that you are also allowed to pass longhand to roll, and longhand terms are unaffected by these regexs
-  string=string.replace(/dis(?:adv)?(?:antage)?\s*(\d+)[d\!](\d+)/g, 'disadvantage($1, $2)');
-  string=string.replace(/dis(?:adv)?(?:antage)?\s*[d\!](\d+)/g, 'disadvantage(1, $1)');
-  string=string.replace(/adv(?:antage)?\s*(\d+)[d\!](\d+)/g, 'advantage($1, $2)');
-  string=string.replace(/adv(?:antage)?\s*[d\!](\d+)/g, 'advantage(1, $1)');
-  string=string.replace(/(\d+)[d\!](\d+)/g, 'd($1, $2)');
-  string=string.replace(/[d\!](\d+)/g, 'd(1, $1)');
+  string=string.replace(/dis(?:adv)?(?:antage)?\s*(\d+)d(\d+)/g, 'disadvantage($1, $2)');
+  string=string.replace(/dis(?:adv)?(?:antage)?\s*d(\d+)/g, 'disadvantage(1, $1)');
+  string=string.replace(/adv(?:antage)?\s*(\d+)d(\d+)/g, 'advantage($1, $2)');
+  string=string.replace(/adv(?:antage)?\s*d(\d+)/g, 'advantage(1, $1)');
+  string=string.replace(/(\d+)d(\d+)/g, 'd($1, $2)');
+  string=string.replace(/d(\d+)/g, 'd(1, $1)');
   roll_record += string;
 
   //This is our sanitization step. Hopefully the remaining characters are not enough for a jsfuck-style attack,
