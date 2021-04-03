@@ -61,6 +61,7 @@ function roll(string){
   // but it's hard to say. JavaScript, amirite? Anyhow, I think this should be good, but I'm not omniscient.
   //Since we know exactly what functions we're going to use in nicedice longhand expressions, we can conservatively disallow everything else.
   //Note that we have to allow the comma for function arguments, so we have to allow the comma operator, which is a strange operator.
+  //This allows easy (ab)use of nicedice as a basic calculator, if the input is eg "d6, 2+2".
   //How doth the comma op'rator / return his shining tail / Confusing so his creator / On every golden scale!
   if(!/^([\d\s+*%\-\/\(\)\,]|disadvantage\(|advantage\(|d\()*$/.test(string)){
     return {valid: false, value: undefined, input: input, roll_record: "Input includes illegal characters or compositions: "+roll_record};
