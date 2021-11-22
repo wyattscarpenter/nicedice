@@ -45,7 +45,7 @@ function roll(string){
   }
   
   //these (strongly normalizing!) rewrite rules rewrite nicedice shorthand
-  // example: 2d6+d6+3!4+adv d5
+  // example: 2d6+d6+3d4+adv d5
   //to nicedice longhand
   //example: d(2,6)+d(1,6)+d(3,4)+advantage(1,5)
   //note that you are also allowed to pass longhand to roll, and longhand terms are unaffected by these regexs
