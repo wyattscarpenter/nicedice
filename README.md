@@ -1,6 +1,10 @@
 # nicedice
 rolls dnd-style dice
 
+Online demo page: https://wyattscarpenter.github.io/nicedice
+
+NPM listing: https://www.npmjs.com/package/nicedice
+
 NiceDice is a public domain JavaScript module that allows for the generation of random numbers using XdY dice notation, as described here: https://en.wikipedia.org/wiki/Dice_notation
 
 An arbitrary number of dice expressions can be combined together using the basic JavaScript arithmetic operators, +-*/%. The comma operator is also supported, as is ** for exponentiation.
