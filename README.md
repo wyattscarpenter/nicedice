@@ -21,7 +21,7 @@ Internally, dice expressions are evaluated using the Function object constructor
 
 I consider NiceDice to be completely feature-complete, mature, and finished. I do not expect to ever have to update it.
 
-Edit, 2023-02-13: Some more interesting information about surprising constructions one can do in nicedice shorthand in javascript, but which I believe to be ultimately harmless.
+## Edit, 2023-02-13: Some more interesting information about surprising constructions one can do in nicedice shorthand in javascript, but which I believe to be ultimately harmless.
 
 Strings:
 
@@ -35,7 +35,7 @@ Whoops, that assumption proved incorrect! https://neil.fraser.name/software/JS-I
 
 HOWEVER, as far as I can tell there is no way to actually EVALUATE a regular expression literal in javascript without alphabetical characters, which are still disallowed. One can't just write `/1*2/('1122')` or whatever, one needs to actually invoke methods with names, such as `.exec`, `.match`, etc. So we're still safe. One can construct a regex literal in nicedice shorthand, but one can't do anything with it.
 
-Edit, 2023-02-13: Similar "nicedice" projects.
+## Edit, 2023-02-13: Similar "nicedice" projects.
 
 There are a number of things called "nicedice" in the world—apparently, it's a very easy rhyme to think of!—for example, companies that sell you physical dice, online dice games, visual dice simulators, and also some things that have nothing to do with dice. However, there are also "nicedice" projects extremely similar to this nicedice, being also textual dice-expression evaluators. I list them here, for the sake of clarity. My method for gathering these was principally to search github.com for "nicedice" on 2023-02-13 and click on every repository result (there were 16), listing only the truly relevant:
 
